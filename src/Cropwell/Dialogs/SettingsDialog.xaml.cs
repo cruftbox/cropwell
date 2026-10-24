@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Microsoft.Win32;
 using Cropwell.Models;
 using Cropwell.Providers;
 using Cropwell.Services;
@@ -23,10 +24,12 @@ public partial class SettingsDialog : Window
         Result = new AppSettings
         {
             ActiveProvider = settings.ActiveProvider,
+            ExportFolder = settings.ExportFolder,
             Window = new WindowSettings { Left = settings.Window.Left, Top = settings.Window.Top, Width = settings.Window.Width, Height = settings.Window.Height },
             Providers = settings.Providers.ToDictionary(x => x.Key, x => x.Value.Clone(), StringComparer.OrdinalIgnoreCase)
         };
         foreach (var key in Result.Providers.Keys) _actions[key] = KeyAction.Unchanged;
+        ExportFolderBox.Text = Result.ExportFolder;
         ProviderBox.ItemsSource = Result.Providers;
         ProviderBox.SelectedValue = Result.ActiveProvider;
     }
@@ -52,10 +55,23 @@ public partial class SettingsDialog : Window
 
     private void SaveFields()
     {
+        Result.ExportFolder = ExportFolderBox.Text.Trim();
         if (_currentId is null) return;
         Result.Providers[_currentId].Model = ModelBox.Text.Trim();
         Result.Providers[_currentId].BaseUrl = BaseUrlBox.Text.Trim();
     }
+
+    private void BrowseExportFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Choose export folder",
+            InitialDirectory = Directory.Exists(ExportFolderBox.Text) ? ExportFolderBox.Text : null
+        };
+        if (dialog.ShowDialog(this) == true) ExportFolderBox.Text = dialog.FolderName;
+    }
+
+    private void ClearExportFolder_Click(object sender, RoutedEventArgs e) => ExportFolderBox.Text = "";
 
     private void KeyChanged(object sender, RoutedEventArgs e)
     {
@@ -142,13 +158,19 @@ public partial class SettingsDialog : Window
     private void ShowStatus(string text, bool? success)
     {
         StatusText.Foreground = success == true ? Brushes.ForestGreen : success == false ? Brushes.Firebrick : Brushes.DimGray;
-        StatusText.Text = text;
+        StatusText.Text = success == true ? "✓ " + text : success == false ? "! " + text : text;
     }
 
     private void Save_Click(object sender, RoutedEventArgs e)
     {
         SaveFields();
         if (ProviderBox.SelectedValue is not string id) return;
+        if (!string.IsNullOrWhiteSpace(Result.ExportFolder) && !Directory.Exists(Result.ExportFolder))
+        {
+            ShowStatus("Choose an existing export folder, or leave the setting empty.", false);
+            ExportFolderBox.Focus();
+            return;
+        }
         foreach (var provider in Result.Providers.Values)
         {
             if (string.IsNullOrWhiteSpace(provider.Model)) { ShowStatus("Every provider needs a model name.", false); return; }

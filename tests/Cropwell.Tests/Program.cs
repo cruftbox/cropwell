@@ -152,6 +152,8 @@ internal static class Program
             finally { if (Directory.Exists(folder)) Directory.Delete(folder, true); }
         });
         Run("Per-provider settings round trip independently", TestSettingsRoundTrip);
+        Run("Configured export folder takes priority", TestConfiguredExportFolder);
+        Run("Settings displays stored export folder", TestSettingsDisplaysExportFolder);
         Run("Mock provider honors cancellation", () =>
         {
             var provider = new MockProvider(new ProviderSettings { DisplayName = "Mock", Model = "mock-v1" });
@@ -260,7 +262,7 @@ internal static class Program
         try
         {
             var service = new SettingsService(path);
-            var settings = new AppSettings { ActiveProvider = "gemini" };
+            var settings = new AppSettings { ActiveProvider = "gemini", ExportFolder = folder };
             settings.Providers["anthropic"].Model = "claude-test";
             settings.Providers["anthropic"].BaseUrl = "";
             settings.Providers["gemini"].ReasoningEffort = "minimal";
@@ -268,6 +270,7 @@ internal static class Program
             service.Save(settings);
             var loaded = service.Load();
             Equal("gemini", loaded.ActiveProvider);
+            Equal(folder, loaded.ExportFolder);
             Equal("claude-test", loaded.Providers["anthropic"].Model);
             Equal("https://api.anthropic.com", loaded.Providers["anthropic"].BaseUrl);
             Equal("low", loaded.Providers["gemini"].ReasoningEffort);
@@ -275,6 +278,35 @@ internal static class Program
             Equal("gpt-6-sol", loaded.Providers["openai"].Model);
         }
         finally { if (Directory.Exists(folder)) Directory.Delete(folder, true); }
+    }
+
+    private static void TestConfiguredExportFolder()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "cropwell-test-" + Guid.NewGuid().ToString("N"));
+        var configured = Path.Combine(root, "configured");
+        var source = Path.Combine(root, "source", "image.png");
+        var previous = Path.Combine(root, "previous");
+        Directory.CreateDirectory(configured);
+        Directory.CreateDirectory(Path.GetDirectoryName(source)!);
+        try
+        {
+            Equal(configured, MainWindow.ResolveInitialExportFolder(new AppSettings { ExportFolder = configured }, source, previous)!);
+            Equal(previous, MainWindow.ResolveInitialExportFolder(new AppSettings(), source, previous)!);
+            Equal(Path.GetDirectoryName(source)!, MainWindow.ResolveInitialExportFolder(new AppSettings(), source, null)!);
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
+    private static void TestSettingsDisplaysExportFolder()
+    {
+        var folder = Path.Combine(Path.GetTempPath(), "cropwell-export-folder");
+        var dialog = new Cropwell.Dialogs.SettingsDialog(new AppSettings { ExportFolder = folder });
+        try
+        {
+            var exportFolderBox = (TextBox)dialog.FindName("ExportFolderBox");
+            Equal(folder, exportFolderBox.Text);
+        }
+        finally { dialog.Close(); }
     }
 
     private static BitmapSource Solid(int width, int height, Color color)

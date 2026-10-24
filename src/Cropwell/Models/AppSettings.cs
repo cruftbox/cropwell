@@ -3,6 +3,7 @@ namespace Cropwell.Models;
 public sealed class AppSettings
 {
     public string ActiveProvider { get; set; } = "openai";
+    public string ExportFolder { get; set; } = "";
     public Dictionary<string, ProviderSettings> Providers { get; set; } = ProviderDefaults.Create();
     public WindowSettings Window { get; set; } = new();
 }

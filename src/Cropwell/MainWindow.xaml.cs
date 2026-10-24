@@ -81,7 +81,7 @@ public partial class MainWindow : Window
         {
             Title = "Export image",
             FileName = sourceName + "-cropwell.png",
-            InitialDirectory = _lastExportFolder ?? Path.GetDirectoryName(_document.SourcePath),
+            InitialDirectory = ResolveInitialExportFolder(_settings, _document.SourcePath, _lastExportFolder),
             Filter = "PNG image|*.png|WebP image|*.webp|JPEG image|*.jpg|GIF image|*.gif",
             FilterIndex = 1,
             AddExtension = true,
@@ -105,6 +105,13 @@ public partial class MainWindow : Window
             MessageBox.Show(this, ex is InvalidOperationException ? ex.Message : "Cropwell could not export the image.", "Export image", MessageBoxButton.OK, MessageBoxImage.Error);
             return false;
         }
+    }
+
+    internal static string? ResolveInitialExportFolder(AppSettings settings, string sourcePath, string? lastExportFolder)
+    {
+        if (!string.IsNullOrWhiteSpace(settings.ExportFolder) && Directory.Exists(settings.ExportFolder))
+            return settings.ExportFolder;
+        return lastExportFolder ?? Path.GetDirectoryName(sourcePath);
     }
 
     private void Undo_Click(object sender, RoutedEventArgs e) { _document?.Undo(); DocumentChanged(); }
@@ -213,8 +220,19 @@ public partial class MainWindow : Window
 
     private void UpdateUi()
     {
+        var hasDocument = _document is not null;
+        ExportButton.IsEnabled = hasDocument;
+        ResizeButton.IsEnabled = hasDocument;
         UndoButton.IsEnabled = _document?.CanUndo == true;
         RedoButton.IsEnabled = _document?.CanRedo == true;
+        SquareCropButton.IsEnabled = hasDocument;
+        PortraitCropButton.IsEnabled = hasDocument;
+        FreeCropButton.IsEnabled = hasDocument;
+        ZoomOutButton.IsEnabled = hasDocument;
+        ZoomInButton.IsEnabled = hasDocument;
+        FitButton.IsEnabled = hasDocument;
+        ActualButton.IsEnabled = hasDocument;
+        AltTextButton.IsEnabled = hasDocument;
         ApplyCropButton.IsEnabled = !Canvas.Selection.IsEmpty;
         UpdateStatus();
     }
@@ -225,6 +243,9 @@ public partial class MainWindow : Window
         ZoomText.Text = $"{Canvas.Zoom:P0}";
         SelectionText.Text = Canvas.Selection.IsEmpty ? "" : $"Selection: {Canvas.Selection.Width} × {Canvas.Selection.Height} px";
         ApplyCropButton.IsEnabled = !Canvas.Selection.IsEmpty;
+        SquareCropButton.IsChecked = Canvas.CropMode == CropMode.Square;
+        PortraitCropButton.IsChecked = Canvas.CropMode == CropMode.Portrait;
+        FreeCropButton.IsChecked = Canvas.CropMode == CropMode.Free;
     }
 
     private bool ConfirmDiscard()

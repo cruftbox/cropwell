@@ -3,43 +3,113 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Cropwell.Controls"
         Title="Cropwell" Width="1100" Height="760" MinWidth="720" MinHeight="500"
-        Background="#FFF3F3F3" AllowDrop="True" Closing="OnClosing" Loaded="OnLoaded"
+        AllowDrop="True" Closing="OnClosing" Loaded="OnLoaded"
         DragOver="OnDragOver" Drop="OnDrop" PreviewKeyDown="OnPreviewKeyDown" PreviewKeyUp="OnPreviewKeyUp">
-  <DockPanel>
-    <StatusBar DockPanel.Dock="Bottom">
-      <StatusBarItem><TextBlock x:Name="DimensionsText" Text="No image" /></StatusBarItem>
-      <Separator />
-      <StatusBarItem><TextBlock x:Name="ZoomText" Text="100%" /></StatusBarItem>
-      <Separator />
-      <StatusBarItem><TextBlock x:Name="SelectionText" /></StatusBarItem>
-    </StatusBar>
-    <Border DockPanel.Dock="Top" Background="White" BorderBrush="#FFD0D0D0" BorderThickness="0,0,0,1" Padding="6">
-      <WrapPanel KeyboardNavigation.TabNavigation="Local">
-        <Button Content="Open" Click="Open_Click" ToolTip="Open (Ctrl+O)" AutomationProperties.Name="Open image" />
-        <Button Content="Export" Click="Export_Click" ToolTip="Export (Ctrl+E)" AutomationProperties.Name="Export image" />
-        <Separator Margin="6,0" />
-        <Button x:Name="UndoButton" Content="Undo" Click="Undo_Click" ToolTip="Undo (Ctrl+Z)" AutomationProperties.Name="Undo" />
-        <Button x:Name="RedoButton" Content="Redo" Click="Redo_Click" ToolTip="Redo (Ctrl+Y)" AutomationProperties.Name="Redo" />
-        <Button Content="Resize" Click="Resize_Click" ToolTip="Resize (Ctrl+R)" AutomationProperties.Name="Resize image" />
-        <Separator Margin="6,0" />
-        <TextBlock Text="Crop" VerticalAlignment="Center" Margin="4" />
-        <Button Content="1:1" Click="SquareCrop_Click" ToolTip="Square crop" AutomationProperties.Name="Square crop" />
-        <Button Content="9:16" Click="PortraitCrop_Click" ToolTip="Portrait crop" AutomationProperties.Name="Portrait crop" />
-        <Button Content="Free" Click="FreeCrop_Click" ToolTip="Free crop" AutomationProperties.Name="Free crop" />
-        <Button x:Name="ApplyCropButton" Content="Crop" Click="ApplyCrop_Click" ToolTip="Crop (Enter)" AutomationProperties.Name="Crop image" />
-        <Separator Margin="6,0" />
-        <Button Content="−" Click="ZoomOut_Click" ToolTip="Zoom out (Ctrl+-)" AutomationProperties.Name="Zoom out" />
-        <Button Content="+" Click="ZoomIn_Click" ToolTip="Zoom in (Ctrl+=)" AutomationProperties.Name="Zoom in" />
-        <Button Content="Fit" Click="Fit_Click" ToolTip="Zoom to fit (Ctrl+0)" AutomationProperties.Name="Zoom to fit" />
-        <Button Content="100%" Click="Actual_Click" ToolTip="Actual pixels (Ctrl+1)" AutomationProperties.Name="Actual pixels" />
-        <Separator Margin="6,0" />
-        <Button x:Name="AltTextButton" Content="Generate alt text" Click="AltText_Click" ToolTip="Generate alt text (Ctrl+G)" AutomationProperties.Name="Generate alt text" />
-        <Button Content="Settings" Click="Settings_Click" ToolTip="Settings (Ctrl+,)" AutomationProperties.Name="Settings" />
-      </WrapPanel>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <Border Grid.Row="0" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+            BorderThickness="0,0,0,1" Padding="8,6,8,4">
+      <Grid KeyboardNavigation.TabNavigation="Local">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal">
+          <Button Click="Open_Click" ToolTip="Open (Ctrl+O)" AutomationProperties.Name="Open image"
+                  Style="{DynamicResource CommandButtonStyle}">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock FontFamily="Segoe Fluent Icons" Text="&#xE8E5;" FontSize="16" Margin="0,0,8,0" />
+              <TextBlock Text="Open" />
+            </StackPanel>
+          </Button>
+          <Button x:Name="ExportButton" Click="Export_Click" ToolTip="Export (Ctrl+E)" AutomationProperties.Name="Export image"
+                  Style="{DynamicResource CommandButtonStyle}">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock FontFamily="Segoe Fluent Icons" Text="&#xE74E;" FontSize="16" Margin="0,0,8,0" />
+              <TextBlock Text="Export" />
+            </StackPanel>
+          </Button>
+        </StackPanel>
+        <Border Grid.Column="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                BorderThickness="1,0,0,0" Margin="8,4" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="17,0,0,0">
+          <Button x:Name="UndoButton" Content="Undo" Click="Undo_Click" ToolTip="Undo (Ctrl+Z)" AutomationProperties.Name="Undo"
+                  Style="{DynamicResource CommandButtonStyle}" />
+          <Button x:Name="RedoButton" Content="Redo" Click="Redo_Click" ToolTip="Redo (Ctrl+Y)" AutomationProperties.Name="Redo"
+                  Style="{DynamicResource CommandButtonStyle}" />
+          <Button x:Name="ResizeButton" Content="Resize" Click="Resize_Click" ToolTip="Resize (Ctrl+R)" AutomationProperties.Name="Resize image"
+                  Style="{DynamicResource CommandButtonStyle}" />
+        </StackPanel>
+        <StackPanel Grid.Column="3" Orientation="Horizontal">
+          <Button x:Name="AltTextButton" Click="AltText_Click" ToolTip="Generate alt text (Ctrl+G)" AutomationProperties.Name="Generate alt text"
+                  Style="{DynamicResource CommandButtonStyle}">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock FontFamily="Segoe Fluent Icons" Text="&#xE91B;" FontSize="16" Margin="0,0,8,0" />
+              <TextBlock Text="Generate alt text" />
+            </StackPanel>
+          </Button>
+          <Button Click="Settings_Click" ToolTip="Settings (Ctrl+,)" AutomationProperties.Name="Settings"
+                  Style="{DynamicResource CommandButtonStyle}">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock FontFamily="Segoe Fluent Icons" Text="&#xE713;" FontSize="16" Margin="0,0,8,0" />
+              <TextBlock Text="Settings" />
+            </StackPanel>
+          </Button>
+        </StackPanel>
+      </Grid>
     </Border>
-    <Grid Background="#FFCACACA">
-      <TextBlock x:Name="EmptyMessage" Text="Open an image or drop one here" FontSize="22" Foreground="#FF555555"
-                 HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+    <Border Grid.Row="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+            BorderThickness="0,0,0,1" Padding="10,4,10,6">
+      <Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+          <TextBlock Text="Crop" FontWeight="SemiBold" VerticalAlignment="Center" Margin="2,0,10,0" />
+          <ToggleButton x:Name="SquareCropButton" Content="1:1" Click="SquareCrop_Click" ToolTip="Square crop"
+                        AutomationProperties.Name="Square crop" Style="{DynamicResource CropModeToggleStyle}" />
+          <ToggleButton x:Name="PortraitCropButton" Content="9:16" Click="PortraitCrop_Click" ToolTip="Portrait crop"
+                        AutomationProperties.Name="Portrait crop" Style="{DynamicResource CropModeToggleStyle}" />
+          <ToggleButton x:Name="FreeCropButton" Content="Free" Click="FreeCrop_Click" ToolTip="Free crop"
+                        AutomationProperties.Name="Free crop" Style="{DynamicResource CropModeToggleStyle}" />
+          <Button x:Name="ApplyCropButton" Content="Crop" Click="ApplyCrop_Click" ToolTip="Crop (Enter)"
+                  AutomationProperties.Name="Crop image" Style="{DynamicResource AccentButtonStyle}"
+                  MinWidth="82" MinHeight="34" Padding="12,4" Margin="8,2,2,2" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+          <TextBlock Text="View" FontWeight="SemiBold" VerticalAlignment="Center" Margin="2,0,8,0" />
+          <Button x:Name="ZoomOutButton" Content="−" Click="ZoomOut_Click" ToolTip="Zoom out (Ctrl+-)"
+                  AutomationProperties.Name="Zoom out" Style="{DynamicResource CompactButtonStyle}" FontSize="18" />
+          <Button x:Name="ZoomInButton" Content="+" Click="ZoomIn_Click" ToolTip="Zoom in (Ctrl+=)"
+                  AutomationProperties.Name="Zoom in" Style="{DynamicResource CompactButtonStyle}" FontSize="18" />
+          <Button x:Name="FitButton" Content="Fit" Click="Fit_Click" ToolTip="Zoom to fit (Ctrl+0)"
+                  AutomationProperties.Name="Zoom to fit" Style="{DynamicResource CompactButtonStyle}" MinWidth="48" />
+          <Button x:Name="ActualButton" Content="100%" Click="Actual_Click" ToolTip="Actual pixels (Ctrl+1)"
+                  AutomationProperties.Name="Actual pixels" Style="{DynamicResource CompactButtonStyle}" MinWidth="58" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="2" Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}">
+      <Border x:Name="EmptyMessage" Panel.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+              Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+              BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+              BorderThickness="1" CornerRadius="8" Padding="40,30">
+        <StackPanel HorizontalAlignment="Center">
+          <TextBlock FontFamily="Segoe Fluent Icons" Text="&#xE91B;" FontSize="34" HorizontalAlignment="Center" />
+          <TextBlock Text="Open an image" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,12,0,4" />
+          <TextBlock Text="Choose a file or drop an image anywhere in this window."
+                     Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" HorizontalAlignment="Center" />
+          <Button Content="Open image" Click="Open_Click" HorizontalAlignment="Center" Margin="0,18,0,0"
+                  Style="{DynamicResource AccentButtonStyle}" Padding="18,6" AutomationProperties.Name="Open image" />
+        </StackPanel>
+      </Border>
       <ScrollViewer x:Name="CanvasScroller" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                     PreviewMouseWheel="CanvasScroller_OnPreviewMouseWheel" PreviewMouseDown="CanvasScroller_OnPreviewMouseDown"
@@ -48,5 +118,17 @@
                               HorizontalAlignment="Center" VerticalAlignment="Center" />
       </ScrollViewer>
     </Grid>
-  </DockPanel>
+
+    <Border Grid.Row="3" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+            BorderThickness="0,1,0,0" Padding="12,7">
+      <Grid>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock x:Name="DimensionsText" Text="No image" />
+          <TextBlock Text="  •  " Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+          <TextBlock x:Name="SelectionText" />
+        </StackPanel>
+        <TextBlock x:Name="ZoomText" Text="100%" HorizontalAlignment="Right" />
+      </Grid>
+    </Border>
+  </Grid>
 </Window>

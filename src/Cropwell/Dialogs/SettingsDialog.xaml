@@ -1,24 +1,71 @@
 <Window x:Class="Cropwell.Dialogs.SettingsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Settings" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
-  <Grid Margin="18" MinWidth="440">
-    <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
-    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
-    <TextBlock Text="Provider" Margin="0,0,12,10" VerticalAlignment="Center" />
-    <ComboBox x:Name="ProviderBox" Grid.Column="1" DisplayMemberPath="Value.DisplayName" SelectedValuePath="Key" SelectionChanged="ProviderChanged" Margin="0,0,0,10" AutomationProperties.Name="Alt text provider" />
-    <TextBlock Grid.Row="1" Text="Model" Margin="0,0,12,10" VerticalAlignment="Center" />
-    <TextBox x:Name="ModelBox" Grid.Row="1" Grid.Column="1" Margin="0,0,0,10" AutomationProperties.Name="Model name" />
-    <TextBlock Grid.Row="2" Text="Base URL" Margin="0,0,12,10" VerticalAlignment="Center" />
-    <TextBox x:Name="BaseUrlBox" Grid.Row="2" Grid.Column="1" Margin="0,0,0,10" AutomationProperties.Name="Base URL" />
-    <TextBlock Grid.Row="3" Text="API key" Margin="0,0,12,6" VerticalAlignment="Center" />
-    <DockPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,6">
-      <Button x:Name="ValidateKeyButton" DockPanel.Dock="Right" Content="Validate key" Click="ValidateKey_Click" />
-      <PasswordBox x:Name="KeyBox" PasswordChanged="KeyChanged" Margin="0,2,6,2" AutomationProperties.Name="API key" />
-    </DockPanel>
-    <TextBlock Grid.Row="4" Grid.Column="1" x:Name="KeySourceText" Foreground="#FF666666" Margin="0,0,0,12" />
-    <TextBlock Grid.Row="5" Grid.ColumnSpan="2" x:Name="StatusText" Foreground="Firebrick" Margin="0,0,0,8" TextWrapping="Wrap" />
-    <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
-      <Button Content="Cancel" IsCancel="True" />
-      <Button x:Name="SaveButton" Content="Save" IsDefault="True" Click="Save_Click" />
+        Title="Settings" Width="720" Height="590" MinWidth="640" MinHeight="520" ResizeMode="CanResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+  <Grid Margin="24">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <TextBlock Text="Alt text providers" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16" />
+
+    <Border Grid.Row="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+            BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,18">
+      <Grid>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <TextBlock Text="Export folder" FontSize="16" FontWeight="SemiBold" />
+        <TextBlock Grid.Row="1" Text="Leave empty to use the image folder."
+                   Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,3,0,10" />
+        <Grid Grid.Row="2">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <TextBox x:Name="ExportFolderBox" AutomationProperties.Name="Export folder" Margin="0,0,8,0" />
+          <Button Grid.Column="1" Content="Browse…" Click="BrowseExportFolder_Click"
+                  Style="{DynamicResource CommandButtonStyle}" Margin="0,0,8,0" />
+          <Button Grid.Column="2" Content="Use image folder" Click="ClearExportFolder_Click"
+                  Style="{DynamicResource CommandButtonStyle}" Margin="0" />
+        </Grid>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="2">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="20"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <ListBox x:Name="ProviderBox" DisplayMemberPath="Value.DisplayName" SelectedValuePath="Key"
+               SelectionChanged="ProviderChanged" AutomationProperties.Name="Alt text provider"
+               HorizontalContentAlignment="Stretch" Padding="4" />
+
+      <Border Grid.Column="2" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+              BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+              BorderThickness="1" CornerRadius="8" Padding="20">
+        <Grid>
+          <Grid.ColumnDefinitions><ColumnDefinition Width="82"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <TextBlock Grid.ColumnSpan="2" Text="Provider configuration" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,18" />
+
+          <TextBlock Grid.Row="1" Text="Model" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,12,14" />
+          <TextBox x:Name="ModelBox" Grid.Row="1" Grid.Column="1" Margin="0,0,0,14" AutomationProperties.Name="Model name" />
+
+          <TextBlock Grid.Row="2" Text="Base URL" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,12,14" />
+          <TextBox x:Name="BaseUrlBox" Grid.Row="2" Grid.Column="1" Margin="0,0,0,14" AutomationProperties.Name="Base URL" />
+
+          <TextBlock Grid.Row="3" Text="API key" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,12,0" />
+          <Grid Grid.Row="3" Grid.Column="1">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <PasswordBox x:Name="KeyBox" PasswordChanged="KeyChanged" Margin="0,0,8,0" AutomationProperties.Name="API key" />
+            <Button x:Name="ValidateKeyButton" Grid.Column="1" Content="Validate key" Click="ValidateKey_Click"
+                    Style="{DynamicResource CommandButtonStyle}" Margin="0" />
+          </Grid>
+          <TextBlock Grid.Row="4" Grid.Column="1" x:Name="KeySourceText"
+                     Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,8,0,0" />
+        </Grid>
+      </Border>
+    </Grid>
+
+    <TextBlock Grid.Row="3" x:Name="StatusText" Margin="0,14,0,14" TextWrapping="Wrap"
+               AutomationProperties.LiveSetting="Polite" />
+    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+      <Button Content="Cancel" IsCancel="True" Style="{DynamicResource DialogButtonStyle}" />
+      <Button x:Name="SaveButton" Content="Save" IsDefault="True" Click="Save_Click"
+              Style="{DynamicResource AccentButtonStyle}" MinWidth="88" MinHeight="34" Padding="12,5" Margin="8,0,0,0" />
     </StackPanel>
   </Grid>
 </Window>

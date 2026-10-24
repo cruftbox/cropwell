@@ -28,6 +28,8 @@ Use **Validate key** to send a generated 1×1 image through the selected provide
 
 The active provider is the one selected when Settings is saved. Each provider also has its own editable model and base URL. A stored key takes precedence over the corresponding environment variable.
 
+Settings also includes an optional export folder. When it is empty, Cropwell uses the last export folder from the current session or the source image's folder. When it contains an existing folder, that folder is the default location for every export.
+
 | Provider | Default model | Base URL | Environment variable |
 |---|---|---|---|
 | Claude | `claude-opus-5-5` | `https://api.anthropic.com` | `ANTHROPIC_API_KEY` |

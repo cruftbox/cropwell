@@ -105,7 +105,7 @@ Because there is no in-app save, the app warns before discarding work:
 
 - Export only. The app never overwrites the source file. The export dialog refuses the source file's path with a short message.
 - The export dialog lets the user pick the destination, with an editable filename.
-- Default folder: the last export folder used in this session, or the source file's folder for the first export.
+- Default folder: a valid export folder configured in Settings; otherwise the last export folder used in this session, or the source file's folder for the first export. An empty setting uses this fallback behavior.
 - Default filename: `<source name>-cropwell.<ext>`.
 - Formats: PNG (default), WebP, JPG, GIF. The extension follows the chosen format.
 - If the destination file exists, confirm before overwriting.
@@ -189,6 +189,8 @@ Provider defaults. Every model ID and base URL is editable in settings, because 
 Mock provider. When the environment variable `CROPWELL_MOCK=1` is set at launch, a fifth entry, Mock, appears in the provider dropdown. It needs no key and returns a fixed sentence after a short delay. It never appears otherwise.
 
 ## 14. Settings and API keys
+
+- Settings includes an optional export folder. Saving rejects a non-empty path that is not an existing folder.
 
 A settings dialog with:
 
