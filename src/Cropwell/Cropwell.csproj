@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework Condition="'$(CompatibilityTargetFramework)' == ''">net10.0-windows</TargetFramework>
+    <TargetFramework Condition="'$(CompatibilityTargetFramework)' != ''">$(CompatibilityTargetFramework)</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Cropwell</AssemblyName>
+    <RootNamespace>Cropwell</RootNamespace>
+    <ApplicationIcon>Assets\cropwell.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>0.1.0</Version>
+    <Authors>Cropwell contributors</Authors>
+    <Description>Prepare images for social media.</Description>
+    <Copyright>Licensed under the MIT License.</Copyright>
+    <RuntimeIdentifier Condition="'$(CompatibilityTargetFramework)' == '' and '$(BuildingTests)' != 'true'">win-x64</RuntimeIdentifier>
+    <SelfContained Condition="'$(CompatibilityTargetFramework)' == '' and '$(BuildingTests)' != 'true'">true</SelfContained>
+    <PublishSingleFile Condition="'$(CompatibilityTargetFramework)' == '' and '$(BuildingTests)' != 'true'">true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Cropwell.Tests" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+.vs/
+.idea/
+.vscode/
+artifacts/
+**/bin/
+**/obj/
+.dotnet-home/
+.appdata/
+.localappdata/
+.bundle-extract/
+.nuget/
+.sdk-layout/
+*.user
+*.suo
+*.log
+*.tmp

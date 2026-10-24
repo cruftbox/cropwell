@@ -1,0 +1,67 @@
+# Cropwell
+
+Cropwell is a Windows 11 desktop app for preparing one image at a time for social media. It opens common image formats, normalizes orientation and color, provides fixed and free crop tools, resizes with Lanczos resampling, exports without source metadata, and generates accessible alt text with a selected LLM.
+
+Cropwell is a C# WPF application targeting .NET 10 and `win-x64`.
+
+## Build
+
+Install the .NET 10.0.402 SDK, then run this command from the repository root:
+
+```powershell
+.\build.ps1
+```
+
+The self-contained single-file executable is written to `artifacts\publish\Cropwell.exe`. The app has no application-level third-party NuGet package dependencies; publish restores Microsoft's target runtime pack when necessary.
+
+Run the offline checks with:
+
+```powershell
+.\test.ps1
+```
+
+## API keys and providers
+
+Open Settings with the toolbar button or `Ctrl+,`. Select a provider, enter its API key, and choose Save. Cropwell stores a separate key for each provider as a generic credential in Windows Credential Manager. Keys are not written to `settings.json` or the log.
+
+Use **Validate key** to send a generated 1×1 image through the selected provider's configured model and base URL. This tests the pending key before it is saved and may incur a small provider charge.
+
+The active provider is the one selected when Settings is saved. Each provider also has its own editable model and base URL. A stored key takes precedence over the corresponding environment variable.
+
+| Provider | Default model | Base URL | Environment variable |
+|---|---|---|---|
+| Claude | `claude-opus-5-5` | `https://api.anthropic.com` | `ANTHROPIC_API_KEY` |
+| ChatGPT | `gpt-6-sol` | `https://api.openai.com` | `OPENAI_API_KEY` |
+| Gemini | `gemini-3.8-flash` | `https://generativelanguage.googleapis.com` | `GEMINI_API_KEY` |
+| Muse Spark | `muse-spark-1.3` | `https://api.meta.ai/v1` | `META_API_KEY` |
+
+Set `CROPWELL_MOCK=1` before launch to add a Mock provider that returns a fixed sentence without making a network request.
+
+## Provider verification
+
+Provider APIs and model IDs change. Before a release, check each default model against the vendor's current documentation, then verify each provider locally:
+
+1. Save a valid local key for the provider in Settings, select that provider, and save.
+2. Open a small image with recognizable content.
+3. Generate alt text and confirm that one non-empty sentence appears with the expected provider and model label.
+4. Crop or resize the image, regenerate, and confirm that the request describes the changed working image.
+5. Cancel a request and confirm that no late result replaces the current text.
+6. Remove or invalidate the key and confirm that the error appears in the alt-text window without exposing request details.
+
+Repeat the procedure for Claude, ChatGPT, Gemini, and Muse Spark. Muse Spark must specifically be checked with an image because its OpenAI-compatible endpoint must accept `input_image` parts.
+
+## Images and codecs
+
+Cropwell uses Windows Imaging Component. JPG, PNG, GIF, TIFF, and BMP support comes from Windows. WebP and HEIC depend on codecs installed in Windows. These system codecs are not bundled with Cropwell. A missing or decode-only codec produces a normal open or export error.
+
+## Local data
+
+Non-secret settings are stored in `%APPDATA%\Cropwell\settings.json`. Logs are stored in `%LOCALAPPDATA%\Cropwell\logs\cropwell.log` and rotate at 1 MB with three backups. Logs contain file names, provider/model names, HTTP statuses, and error details. They do not contain API keys, request headers, image data, or generated text.
+
+## Windows SmartScreen
+
+Cropwell is currently unsigned. Windows SmartScreen may warn on first launch. If the executable came from a build or source you trust, choose **More info**, verify that the app name is Cropwell, and choose **Run anyway**.
+
+## License
+
+Cropwell is licensed under the MIT License. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).

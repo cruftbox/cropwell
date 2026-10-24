@@ -1,0 +1,50 @@
+Cropwell third-party notices
+============================
+
+waggle-dance provider behavior
+------------------------------
+
+Cropwell includes C# ports of provider behavior from waggle-dance.
+
+MIT License
+
+Copyright (c) 2026 Michael Pusateri
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+.NET runtime and Windows Desktop runtime
+----------------------------------------
+
+The self-contained executable bundles Microsoft .NET runtime and Windows
+Desktop runtime components. They are Microsoft distributable code governed by
+the Microsoft .NET Library license included with the .NET SDK. Their own
+third-party dependency notices are maintained in the .NET distribution's
+ThirdPartyNotices.txt file:
+
+https://github.com/dotnet/runtime/blob/main/LICENSE.TXT
+https://github.com/dotnet/runtime/blob/main/THIRD-PARTY-NOTICES.TXT
+https://github.com/dotnet/wpf/blob/main/LICENSE.TXT
+https://github.com/dotnet/wpf/blob/main/THIRD-PARTY-NOTICES.TXT
+
+System codecs
+-------------
+
+Cropwell does not bundle image codecs. It calls Windows Imaging Component and
+uses the JPG, PNG, GIF, TIFF, BMP, WebP, and HEIC codecs installed on the
+computer. Those operating-system components are outside the Cropwell binary.
