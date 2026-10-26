@@ -1,0 +1,67 @@
+Windows Registry Editor Version 5.00
+
+; Adds "Edit with Cropwell" to the right-click menu for image files (current user).
+; Assumes Cropwell.exe is at C:\Code\cropwell\artifacts\publish. Edit the paths if it is elsewhere.
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.jpg\shell\EditWithCropwell]
+@="Edit with Cropwell"
+"Icon"="C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.jpg\shell\EditWithCropwell\command]
+@="\"C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe\" \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.jpeg\shell\EditWithCropwell]
+@="Edit with Cropwell"
+"Icon"="C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.jpeg\shell\EditWithCropwell\command]
+@="\"C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe\" \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.png\shell\EditWithCropwell]
+@="Edit with Cropwell"
+"Icon"="C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.png\shell\EditWithCropwell\command]
+@="\"C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe\" \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.gif\shell\EditWithCropwell]
+@="Edit with Cropwell"
+"Icon"="C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.gif\shell\EditWithCropwell\command]
+@="\"C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe\" \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.tif\shell\EditWithCropwell]
+@="Edit with Cropwell"
+"Icon"="C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.tif\shell\EditWithCropwell\command]
+@="\"C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe\" \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.tiff\shell\EditWithCropwell]
+@="Edit with Cropwell"
+"Icon"="C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.tiff\shell\EditWithCropwell\command]
+@="\"C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe\" \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.bmp\shell\EditWithCropwell]
+@="Edit with Cropwell"
+"Icon"="C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.bmp\shell\EditWithCropwell\command]
+@="\"C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe\" \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.webp\shell\EditWithCropwell]
+@="Edit with Cropwell"
+"Icon"="C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.webp\shell\EditWithCropwell\command]
+@="\"C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe\" \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.heic\shell\EditWithCropwell]
+@="Edit with Cropwell"
+"Icon"="C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.heic\shell\EditWithCropwell\command]
+@="\"C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe\" \"%1\""
