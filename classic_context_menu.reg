@@ -1,0 +1,10 @@
+Windows Registry Editor Version 5.00
+
+; Makes the classic right-click menu the default on Windows 11 (current user), so
+; "Edit with Cropwell" shows without choosing "Show more options".
+; Equivalent to: reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
+; Restart Explorer or sign out for it to take effect.
+; To undo: reg delete "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f
+
+[HKEY_CURRENT_USER\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32]
+@=""
