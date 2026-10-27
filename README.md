@@ -26,6 +26,24 @@ Your browser may also warn that the file is not commonly downloaded. In Microsof
 
 If Smart App Control is turned on, Windows blocks unsigned apps without offering **Run anyway**, and Cropwell cannot run.
 
+### Right-click menu
+
+`add_context_menu.reg` adds **Edit with Cropwell** to the right-click menu for image files in File Explorer. It applies to the current user only.
+
+<p align="center"><img src="docs/images/cropwell-right-click.png" alt="File Explorer right-click menu on an image with Edit with Cropwell listed"></p>
+
+1. Open `add_context_menu.reg` in a text editor.
+2. Replace every `C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe` with the full path to your copy of `Cropwell.exe`. Keep the doubled backslashes, for example `C:\\Tools\\Cropwell.exe`.
+3. Save the file and double-click it to import it.
+
+If you move `Cropwell.exe` later, repeat these steps with the new path.
+
+On Windows 11 the entry appears under **Show more options**. To make the classic menu the default for every file, double-click `classic_context_menu.reg`, then restart Explorer or sign out. This uses a registry setting that Microsoft does not document, so a Windows update could stop it working. To undo it, run:
+
+```powershell
+reg delete "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f
+```
+
 ## Build
 
 Install the .NET 10.0.402 SDK, then run this command from the repository root:

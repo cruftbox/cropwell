@@ -1,7 +1,13 @@
 Windows Registry Editor Version 5.00
 
 ; Adds "Edit with Cropwell" to the right-click menu for image files (current user).
-; Assumes Cropwell.exe is at C:\Code\cropwell\artifacts\publish. Edit the paths if it is elsewhere.
+;
+; Before importing, replace every C:\\Code\\cropwell\\artifacts\\publish\\Cropwell.exe below
+; with the full path to your copy of Cropwell.exe. Keep the doubled backslashes, for example
+; C:\\Tools\\Cropwell.exe. Use Find and Replace in a text editor to change all 18 occurrences.
+;
+; On Windows 11 the entry appears under "Show more options" unless the classic menu is
+; enabled with classic_context_menu.reg.
 
 [HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.jpg\shell\EditWithCropwell]
 @="Edit with Cropwell"
