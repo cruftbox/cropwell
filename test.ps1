@@ -1,9 +1,9 @@
 $ErrorActionPreference = 'Stop'
-$requiredSdk = '10.0.402'
+$requiredSdkPattern = '^10\.0\.4(0[2-9]|[1-9]\d) '
 $repositoryRoot = $PSScriptRoot
 
-if (-not (dotnet --list-sdks | Select-String -SimpleMatch "$requiredSdk [")) {
-    throw ".NET SDK $requiredSdk is required. Install that SDK and run the tests again."
+if (-not (dotnet --list-sdks | Select-String -Pattern $requiredSdkPattern)) {
+    throw ".NET SDK 10.0.402 or a later 10.0.4xx patch is required. Install that SDK and run the tests again."
 }
 
 $env:DOTNET_CLI_HOME = Join-Path $repositoryRoot '.dotnet-home'

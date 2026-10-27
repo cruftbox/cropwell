@@ -6,9 +6,25 @@ Cropwell is a Windows 11 desktop app for preparing one image at a time for socia
 
 <p align="center"><img src="docs/images/cropwell-resize.png" alt="Resize dialog with width and height fields"></p>
 
-<p align="center"><img src="docs/images/cropwell-alt-text.png" alt="Alt text window showing a generated description from Claude"></p>
-
 Cropwell is a C# WPF application targeting .NET 10 and `win-x64`.
+
+## Download
+
+Download `Cropwell.exe` from the latest release on the [Releases page](https://github.com/cruftbox/cropwell/releases). It is a single file that runs without installing anything else. Put it in any folder and double-click it.
+
+### First launch
+
+Cropwell is not code-signed, so Windows SmartScreen blocks the first launch with a "Windows protected your PC" message. To run it:
+
+1. Choose **More info**.
+2. Confirm that the app name is `Cropwell.exe`.
+3. Choose **Run anyway**.
+
+Windows remembers this choice for that file, so later launches open normally. Each new release is a new file and shows the message once again.
+
+Your browser may also warn that the file is not commonly downloaded. In Microsoft Edge, choose **Keep**, and then **Keep anyway** if asked.
+
+If Smart App Control is turned on, Windows blocks unsigned apps without offering **Run anyway**, and Cropwell cannot run.
 
 ## Build
 
@@ -25,6 +41,8 @@ Run the offline checks with:
 ```powershell
 .\test.ps1
 ```
+
+GitHub Actions runs the tests and the build on every push to `main` and on pull requests. Each run stores `Cropwell.exe` as a workflow artifact. Pushing a tag that starts with `v`, such as `v0.1.0`, also creates a release with `Cropwell.exe` attached.
 
 ## API keys and providers
 
@@ -47,6 +65,8 @@ Settings also includes an optional export folder. When it is empty, Cropwell use
 
 Set `CROPWELL_MOCK=1` before launch to add a Mock provider that returns a fixed sentence without making a network request.
 
+<p align="center"><img src="docs/images/cropwell-alt-text.png" alt="Alt text window showing a generated description from Claude"></p>
+
 ## Provider verification
 
 Provider APIs and model IDs change. Before a release, check each default model against the vendor's current documentation, then verify each provider locally:
@@ -67,10 +87,6 @@ Cropwell uses Windows Imaging Component. JPG, PNG, GIF, TIFF, and BMP support co
 ## Local data
 
 Non-secret settings are stored in `%APPDATA%\Cropwell\settings.json`. Logs are stored in `%LOCALAPPDATA%\Cropwell\logs\cropwell.log` and rotate at 1 MB with three backups. Logs contain file names, provider/model names, HTTP statuses, and error details. They do not contain API keys, request headers, image data, or generated text.
-
-## Windows SmartScreen
-
-Cropwell is currently unsigned. Windows SmartScreen may warn on first launch. If the executable came from a build or source you trust, choose **More info**, verify that the app name is Cropwell, and choose **Run anyway**.
 
 ## License
 
