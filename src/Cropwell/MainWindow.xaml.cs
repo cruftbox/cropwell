@@ -2,6 +2,7 @@ using Microsoft.Win32;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Cropwell.Dialogs;
 using Cropwell.Models;
 using Cropwell.Providers;
@@ -56,13 +57,8 @@ public partial class MainWindow : Window
         try
         {
             var image = await Task.Run(() => ImageLoader.LoadNormalized(path));
-            _document = new ImageDocument(image, path);
-            Canvas.Image = image;
-            Canvas.CropMode = CropMode.None;
-            EmptyMessage.Visibility = Visibility.Collapsed;
-            FitToWindow();
+            ShowDocument(new ImageDocument(image, path));
             AppLog.Info($"Opened {Path.GetFileName(path)}");
-            UpdateUi();
         }
         catch (Exception ex)
         {
@@ -71,16 +67,58 @@ public partial class MainWindow : Window
         }
     }
 
+    private async void Capture_Click(object sender, RoutedEventArgs e)
+    {
+        if (!ConfirmDiscard()) return;
+        var altTextWasVisible = _altTextWindow?.IsVisible == true;
+        _altTextWindow?.Hide();
+        Hide();
+        BitmapSource? image = null;
+        Exception? failure = null;
+        try
+        {
+            // Give the desktop time to redraw without Cropwell before the screen is frozen.
+            await Task.Delay(300);
+            image = await CaptureOverlay.SelectAsync(ScreenCapture.CaptureMonitors());
+        }
+        catch (Exception ex) { failure = ex; }
+        finally
+        {
+            Show();
+            if (altTextWasVisible) _altTextWindow?.Show();
+            Activate();
+        }
+
+        if (failure is not null)
+        {
+            AppLog.Error("Screen capture failed", failure);
+            MessageBox.Show(this, "Cropwell could not capture the screen.", "Capture", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+        if (image is null) return;
+        ShowDocument(ImageDocument.FromCapture(image, DateTime.Now));
+        AppLog.Info($"Captured {image.PixelWidth} × {image.PixelHeight} px");
+    }
+
+    private void ShowDocument(ImageDocument document)
+    {
+        _document = document;
+        Canvas.Image = document.Image;
+        Canvas.CropMode = CropMode.None;
+        EmptyMessage.Visibility = Visibility.Collapsed;
+        FitToWindow();
+        UpdateUi();
+    }
+
     private void Export_Click(object sender, RoutedEventArgs e) => ExportCurrent();
 
     private bool ExportCurrent()
     {
         if (_document is null) return false;
-        var sourceName = Path.GetFileNameWithoutExtension(_document.SourcePath);
         var dialog = new SaveFileDialog
         {
             Title = "Export image",
-            FileName = sourceName + "-cropwell.png",
+            FileName = _document.ExportFileName,
             InitialDirectory = ResolveInitialExportFolder(_settings, _document.SourcePath, _lastExportFolder),
             Filter = "PNG image|*.png|WebP image|*.webp|JPEG image|*.jpg|GIF image|*.gif",
             FilterIndex = 1,
@@ -107,10 +145,11 @@ public partial class MainWindow : Window
         }
     }
 
-    internal static string? ResolveInitialExportFolder(AppSettings settings, string sourcePath, string? lastExportFolder)
+    internal static string? ResolveInitialExportFolder(AppSettings settings, string? sourcePath, string? lastExportFolder)
     {
         if (!string.IsNullOrWhiteSpace(settings.ExportFolder) && Directory.Exists(settings.ExportFolder))
             return settings.ExportFolder;
+        if (sourcePath is null) return KnownFolders.Downloads();
         return lastExportFolder ?? Path.GetDirectoryName(sourcePath);
     }
 

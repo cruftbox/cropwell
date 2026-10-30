@@ -19,9 +19,9 @@ public static class ImageExporter
         _ => throw new ArgumentOutOfRangeException(nameof(format))
     };
 
-    public static void Export(BitmapSource image, string destination, string sourcePath, ExportFormat format)
+    public static void Export(BitmapSource image, string destination, string? sourcePath, ExportFormat format)
     {
-        if (Path.GetFullPath(destination).Equals(Path.GetFullPath(sourcePath), StringComparison.OrdinalIgnoreCase))
+        if (sourcePath is not null && Path.GetFullPath(destination).Equals(Path.GetFullPath(sourcePath), StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException("Cropwell will not overwrite the source image.");
 
         BitmapEncoder encoder = format switch

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Cropwell.Services;
@@ -11,7 +12,9 @@ public sealed class ImageDocument
     private readonly List<BitmapSource> _redo = [];
 
     public BitmapSource Image { get; private set; }
-    public string SourcePath { get; }
+    /// <summary>The opened file, or null for a screen capture.</summary>
+    public string? SourcePath { get; }
+    public string ExportFileName { get; }
     public int Revision { get; private set; }
     public int ExportedRevision { get; private set; }
     public bool HasUnexportedEdits => Revision > 0 && Revision != ExportedRevision;
@@ -19,10 +22,17 @@ public sealed class ImageDocument
     public bool CanRedo => _redo.Count > 0;
 
     public ImageDocument(BitmapSource image, string sourcePath)
+        : this(image, Path.GetFullPath(sourcePath), Path.GetFileNameWithoutExtension(sourcePath) + "-cropwell.png") { }
+
+    private ImageDocument(BitmapSource image, string? sourcePath, string exportFileName)
     {
         Image = image;
-        SourcePath = Path.GetFullPath(sourcePath);
+        SourcePath = sourcePath;
+        ExportFileName = exportFileName;
     }
+
+    public static ImageDocument FromCapture(BitmapSource image, DateTime capturedAt) =>
+        new(image, null, $"Capture {capturedAt.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture)}.png");
 
     public void Crop(Int32Rect selection)
     {

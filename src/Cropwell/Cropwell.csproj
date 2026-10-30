@@ -10,7 +10,7 @@
     <RootNamespace>Cropwell</RootNamespace>
     <ApplicationIcon>Assets\cropwell.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <Authors>Cropwell contributors</Authors>
     <Description>Prepare images for social media.</Description>
     <Copyright>Licensed under the MIT License.</Copyright>

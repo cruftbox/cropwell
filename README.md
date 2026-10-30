@@ -1,6 +1,6 @@
 # Cropwell
 
-Cropwell is a Windows 11 desktop app for preparing one image at a time for social media. It opens common image formats, normalizes orientation and color, provides fixed and free crop tools, resizes with Lanczos resampling, exports without source metadata, and generates accessible alt text with a selected LLM.
+Cropwell is a Windows 11 desktop app for preparing one image at a time for social media. It opens common image formats or captures a selected area of the screen, normalizes orientation and color, provides fixed and free crop tools, resizes with Lanczos resampling, exports without source metadata, and generates accessible alt text with a selected LLM.
 
 <p align="center"><img src="docs/images/cropwell-window.png" alt="Cropwell main window with a 1:1 crop selection on a photo"></p>
 

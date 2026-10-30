@@ -23,6 +23,13 @@
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
+          <Button Click="Capture_Click" ToolTip="Capture part of the screen" AutomationProperties.Name="Capture screen"
+                  Style="{DynamicResource CommandButtonStyle}">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock FontFamily="Segoe Fluent Icons" Text="&#xE924;" FontSize="16" Margin="0,0,8,0" />
+              <TextBlock Text="Capture" />
+            </StackPanel>
+          </Button>
           <Button Click="Open_Click" ToolTip="Open (Ctrl+O)" AutomationProperties.Name="Open image"
                   Style="{DynamicResource CommandButtonStyle}">
             <StackPanel Orientation="Horizontal">

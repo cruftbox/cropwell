@@ -4,6 +4,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Controls;
 using Cropwell.Controls;
+using Cropwell.Dialogs;
 using Cropwell.Models;
 using Cropwell.Providers;
 using Cropwell.Services;
@@ -153,6 +154,40 @@ internal static class Program
         });
         Run("Per-provider settings round trip independently", TestSettingsRoundTrip);
         Run("Configured export folder takes priority", TestConfiguredExportFolder);
+        Run("Capture exports to configured folder or Downloads", TestCaptureExportFolder);
+        Run("Capture selection maps view units to pixels", () =>
+        {
+            var view = new Size(1000, 500);
+            Equal(new Int32Rect(15, 30, 150, 300), CaptureOverlay.ToPixels(new Point(10, 20), new Point(110, 220), view, 1500, 750));
+            Equal(new Int32Rect(15, 30, 150, 300), CaptureOverlay.ToPixels(new Point(110, 220), new Point(10, 20), view, 1500, 750));
+            Equal(new Int32Rect(1350, 0, 150, 30), CaptureOverlay.ToPixels(new Point(900, 20), new Point(2000, -50), view, 1500, 750));
+        });
+        Run("Tiny capture drags are ignored", () =>
+        {
+            Equal(true, CaptureOverlay.IsTooSmall(new Int32Rect(10, 10, 4, 300)));
+            Equal(true, CaptureOverlay.IsTooSmall(new Int32Rect(10, 10, 300, 0)));
+            Equal(false, CaptureOverlay.IsTooSmall(new Int32Rect(10, 10, 5, 5)));
+        });
+        Run("Captured pixels are made opaque", () =>
+        {
+            var pixel = BitmapSource.Create(1, 1, 120, 120, PixelFormats.Bgr32, null, new byte[] { 10, 20, 30, 0 }, 4);
+            var opaque = ScreenCapture.ToOpaqueBgra(pixel); var bytes = new byte[4]; opaque.CopyPixels(bytes, 4, 0);
+            Equal(PixelFormats.Bgra32, opaque.Format); Equal(96.0, opaque.DpiX);
+            Equal((byte)10, bytes[0]); Equal((byte)20, bytes[1]); Equal((byte)30, bytes[2]); Equal((byte)255, bytes[3]);
+        });
+        Run("Capture document has no source and a timestamped name", () =>
+        {
+            var document = ImageDocument.FromCapture(Solid(2, 2, Colors.Red), new DateTime(2026, 10, 30, 14, 30, 12));
+            Equal(true, document.SourcePath is null);
+            Equal("Capture 2026-10-30 143012.png", document.ExportFileName);
+            Equal("photo-cropwell.png", new ImageDocument(Solid(2, 2, Colors.Red), @"C:\images\photo.jpg").ExportFileName);
+        });
+        Run("Export without a source path succeeds", () =>
+        {
+            var destination = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".png");
+            try { ImageExporter.Export(Solid(2, 2, Colors.Red), destination, null, ExportFormat.Png); Equal(true, File.Exists(destination)); }
+            finally { if (File.Exists(destination)) File.Delete(destination); }
+        });
         Run("Settings displays stored export folder", TestSettingsDisplaysExportFolder);
         Run("Mock provider honors cancellation", () =>
         {
@@ -295,6 +330,20 @@ internal static class Program
             Equal(Path.GetDirectoryName(source)!, MainWindow.ResolveInitialExportFolder(new AppSettings(), source, null)!);
         }
         finally { Directory.Delete(root, true); }
+    }
+
+    private static void TestCaptureExportFolder()
+    {
+        var configured = Path.Combine(Path.GetTempPath(), "cropwell-test-" + Guid.NewGuid().ToString("N"));
+        var previous = Path.Combine(Path.GetTempPath(), "previous");
+        Directory.CreateDirectory(configured);
+        try
+        {
+            Equal(configured, MainWindow.ResolveInitialExportFolder(new AppSettings { ExportFolder = configured }, null, previous)!);
+            Equal(KnownFolders.Downloads(), MainWindow.ResolveInitialExportFolder(new AppSettings(), null, previous)!);
+            Equal(true, Path.IsPathRooted(KnownFolders.Downloads()));
+        }
+        finally { Directory.Delete(configured, true); }
     }
 
     private static void TestSettingsDisplaysExportFolder()

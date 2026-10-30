@@ -38,6 +38,18 @@ Image decoding uses Windows Imaging Component (WIC), including the WebP and HEIC
 - No in-app save. The working image lives in memory for the session.
 - A file that fails to decode shows a short in-app error and leaves the current image unchanged.
 
+### Screen capture
+
+- A Capture button to the left of Open captures part of the screen as the working image. It has no keyboard shortcut and there is no global hotkey.
+- Capture is subject to section 10 before anything else happens.
+- Cropwell hides its windows, waits briefly for the desktop to redraw, then freezes every monitor with a GDI copy of the screen.
+- Each monitor shows its frozen frame full-screen, with a crosshair cursor and everything dimmed except the current selection.
+- The user drags a rectangle of any proportions. A selection stays on the monitor where the drag started. Releasing the mouse captures the selected pixels from the frozen frame, at full physical resolution.
+- A selection smaller than 5 pixels in either dimension is ignored and the frozen frame stays up.
+- Esc cancels and leaves the current image unchanged.
+- Cropwell returns to its previous position and size after a capture or a cancel. A capture opens like a file: zoom to fit, no crop mode, history cleared.
+- Captured pixels are opaque 8-bit sRGB. HDR displays are not handled specially.
+
 ## 5. Image normalization
 
 Applied once, on open, before the image becomes the working image:
@@ -98,15 +110,15 @@ Behavior:
 
 Because there is no in-app save, the app warns before discarding work:
 
-- If the working image has edits that have not been exported since the last edit, opening another image or closing the app shows a confirmation with Export, Discard, and Cancel.
+- If the working image has edits that have not been exported since the last edit, opening another image, starting a capture, or closing the app shows a confirmation with Export, Discard, and Cancel.
 - An image with no edits never prompts.
 
 ## 11. Export
 
 - Export only. The app never overwrites the source file. The export dialog refuses the source file's path with a short message.
 - The export dialog lets the user pick the destination, with an editable filename.
-- Default folder: a valid export folder configured in Settings; otherwise the last export folder used in this session, or the source file's folder for the first export. An empty setting uses this fallback behavior.
-- Default filename: `<source name>-cropwell.<ext>`.
+- Default folder: a valid export folder configured in Settings; otherwise the last export folder used in this session, or the source file's folder for the first export. An empty setting uses this fallback behavior. For a screen capture, the configured folder, otherwise the Downloads folder.
+- Default filename: `<source name>-cropwell.<ext>`. For a screen capture: `Capture <yyyy-MM-dd HHmmss>.<ext>`, using the capture time.
 - Formats: PNG (default), WebP, JPG, GIF. The extension follows the chosen format.
 - If the destination file exists, confirm before overwriting.
 - No quality controls. Fixed defaults:
